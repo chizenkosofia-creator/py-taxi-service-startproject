@@ -26,4 +26,18 @@ jobs:
           pip install pytest
       - name: Run tests
         timeout-minutes: 5
-        run: python manage.py test
+        run: |
+          set -e
+          echo "Searching for manage.py..."
+          MG=$(find . -maxdepth 4 -name manage.py | head -n1 || true)
+          if [ -n "$MG" ]; then
+            echo "Found manage.py at: $MG"
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt --no-cache-dir || pip install django pytest
+            python "$MG" test
+          else
+            echo "manage.py not found — running pytest"
+            python -m pip install --upgrade pip
+            pip install pytest
+            pytest -q
+          fi
