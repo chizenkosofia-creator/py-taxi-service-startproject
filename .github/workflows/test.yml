@@ -26,4 +26,5 @@ jobs:
           pip install pytest
       - name: Run tests
         timeout-minutes: 5
+        working-directory: py-taxi-service-startproject
         run: python manage.py test
